@@ -10,7 +10,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('users', UserController::class)->except(['index']);
+Route::resource('users', UserController::class);
 Route::resource('groups', GroupController::class)->except(['index']);
 
 Route::prefix('groups/{group}/tasks')->name('tasks.')->controller(TaskController::class)->group(
@@ -27,5 +27,5 @@ Route::prefix('groups/{group}/tasks')->name('tasks.')->controller(TaskController
 
 Route::post('groups/{group}/comments', [CommentController::class, 'store'])->name('comments.store');
 
-Route::view('login', 'login');
-Route::view('register', 'register');
+Route::view('login', 'login.login');
+Route::view('register', 'login.register');

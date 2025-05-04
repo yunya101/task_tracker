@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -19,7 +20,9 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+
+        return view('tasks.create');
+
     }
 
     /**
@@ -27,7 +30,23 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        //TODO group_id and executor
+
+        $validated = $request->validate(
+            [
+                'title' => ['string', 'required', 'max:255'],
+                'description' => ['string', 'required', 'max:500'],
+                'deadline' => ['datetime', 'required'],
+                'executor' => ['integer', 'nullable'],
+            ]
+        );
+
+        $task = new Task($validated);
+
+        $task->save();
+
+        return redirect()->route('tasks.index');
     }
 
     /**
@@ -35,7 +54,9 @@ class TaskController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $task = Task::findOrFail($id);
+
+        return view('tasks.show', [$task]);
     }
 
 
@@ -44,7 +65,27 @@ class TaskController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
+        $task = Task::findOrFail($id);
+
+        $validated = $request->validate(
+            [
+                'title' => ['string', 'required', 'max:255'],
+                'description' => ['string', 'required', 'max:500'],
+                'deadline' => ['datetime', 'required'],
+                'executor' => ['integer', 'nullable'],
+            ]
+        );
+
+        $task->title = $validated['title'];
+        $task->description = $validated['description'];
+        $task->deadline = $validated['deadline'];
+        $task->executor = $validated['executor'];
+
+        $task->update();
+
+        return redirect()->route('tasks.index');
+
     }
 
     /**
@@ -52,6 +93,14 @@ class TaskController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+
+        //TODO check auth
+        
+        $task = Task::findOrFail($id);
+
+        $task->delete();
+
+        return redirect()->route('tasks.index');
+
     }
 }
