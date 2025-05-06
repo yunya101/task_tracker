@@ -11,7 +11,7 @@ Route::get('/', function () {
 });
 
 Route::resource('users', UserController::class);
-Route::resource('groups', GroupController::class)->except(['index']);
+Route::resource('groups', GroupController::class);
 
 Route::prefix('groups/{group}/tasks')->name('tasks.')->controller(TaskController::class)->group(
     function () {

@@ -11,4 +11,8 @@ class Task extends Model
         'deadline', 'group_id',
         'executor', 'count_comments',
     ];
+
+    protected $casts = [
+        'deadline' => 'datetime',
+    ];
 }

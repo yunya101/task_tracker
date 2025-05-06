@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('description', 500);
+            $table->string('description', 500)->nullable();
             $table->timestamp('deadline');
             $table->unsignedBigInteger('group_id');
-            $table->unsignedBigInteger('executor');
+            $table->unsignedBigInteger('executor')->nullable();
             $table->smallInteger('count_comments')->default(0);
 
             $table->foreign('group_id')->references('id')->on('groups');

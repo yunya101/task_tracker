@@ -10,4 +10,8 @@ class Group extends Model
         'id', 'name',
         'count_members',
     ];
+
+    public function user() {
+        return $this->belongsToMany(User::class, 'group_members');
+    }
 }

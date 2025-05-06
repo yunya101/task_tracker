@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -11,7 +13,12 @@ class GroupController extends Controller
      */
     public function index()
     {
-        //
+        //TODO
+        $user = User::find(1);
+        $groups = $user->group;
+
+        return view('groups.index', ['groups' => $groups]);
+        
     }
 
     /**
@@ -19,7 +26,7 @@ class GroupController extends Controller
      */
     public function create()
     {
-        //
+        return view('groups.create');
     }
 
     /**
@@ -27,7 +34,22 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        $validated = $request->validate([
+            'name' => ['string', 'required', 'min:1', 'max:50'],
+        ]);
+
+        $group = new Group([
+            'name' => $validated['name'], 
+        ]);
+
+        //TODO
+        $group->save();
+
+        $group->user()->attach(1);
+
+        return redirect()->route('groups.index');
+
     }
 
     /**
@@ -35,7 +57,10 @@ class GroupController extends Controller
      */
     public function show(string $id)
     {
-        //
+        
+        $group = Group::findOrFail($id);
+
+        return view('groups.show', ['group' => $group]);
     }
 
     /**
@@ -43,7 +68,10 @@ class GroupController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $group = Group::findOrFail($id);
+
+        return view('groups.edit', ['group' => $group]);
+        
     }
 
     /**
@@ -51,7 +79,7 @@ class GroupController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        //TODO
     }
 
     /**
@@ -59,6 +87,11 @@ class GroupController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        //TODO
+        $group = Group::findOrFail($id);
+
+        $group->delete();
+
+        return redirect()->route('groups.index');
     }
 }
