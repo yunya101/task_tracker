@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Group;
 use App\Models\User;
+use Auth;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -13,8 +15,8 @@ class GroupController extends Controller
      */
     public function index()
     {
-        //TODO
-        $user = User::find(1);
+
+        $user = Auth::user();
         $groups = $user->group;
 
         return view('groups.index', ['groups' => $groups]);
@@ -41,12 +43,14 @@ class GroupController extends Controller
 
         $group = new Group([
             'name' => $validated['name'], 
+            'count_members' => 1,
         ]);
 
-        //TODO
+        $id = Auth::id();
+
         $group->save();
 
-        $group->user()->attach(1);
+        $group->user()->attach($id);
 
         return redirect()->route('groups.index');
 
@@ -60,7 +64,18 @@ class GroupController extends Controller
         
         $group = Group::findOrFail($id);
 
-        return view('groups.show', ['group' => $group]);
+        $user_id = Auth::id();
+
+        $users = $group->users->toArray();
+
+        foreach ($users as $index => $user) {
+
+            if ($user['id'] == $user_id) {
+                return view('groups.show', ['group' => $group]);
+            }
+        }
+
+        abort(403);
     }
 
     /**

@@ -11,7 +11,7 @@ class Group extends Model
         'count_members',
     ];
 
-    public function user() {
+    public function users() {
         return $this->belongsToMany(User::class, 'group_members');
     }
 }

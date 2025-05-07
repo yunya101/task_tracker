@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Auth;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -10,6 +11,10 @@ class UserController extends Controller
 
     public function index()
     {
+
+        if (!Auth::check()) {
+            return redirect()->route('login.login');
+        }
 
         return view('users.index');
 
@@ -39,7 +44,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect()->route('users.index');
+        return redirect()->route('login.login');
 
     }
 
@@ -99,7 +104,7 @@ class UserController extends Controller
     {
 
         //TODO check auth
-        
+
         $user = User::findOrFail($id);
 
         $user->delete();

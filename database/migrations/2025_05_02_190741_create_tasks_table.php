@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('description', 500)->nullable();
             $table->timestamp('deadline');
+            $table->boolean('is_completed')->default(false);
             $table->unsignedBigInteger('group_id');
             $table->unsignedBigInteger('executor')->nullable();
             $table->smallInteger('count_comments')->default(0);

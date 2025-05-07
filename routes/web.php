@@ -2,16 +2,20 @@
 
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\LoginMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('users', UserController::class);
-Route::resource('groups', GroupController::class);
+Route::resource('users', UserController::class)->except('users.store')->middleware(LoginMiddleware::class);
+Route::post('users/store', [UserController::class, 'store'])->name('users.store');
+
+Route::resource('groups', GroupController::class)->middleware(LoginMiddleware::class);
 
 Route::prefix('groups/{group}/tasks')->name('tasks.')->controller(TaskController::class)->group(
     function () {
@@ -23,9 +27,13 @@ Route::prefix('groups/{group}/tasks')->name('tasks.')->controller(TaskController
         Route::delete('/{task}', 'delete')->name('destroy');
 
     }
-);
+)->middleware(LoginMiddleware::class);
 
-Route::post('groups/{group}/comments', [CommentController::class, 'store'])->name('comments.store');
+Route::post('groups/{group}/comments', [CommentController::class, 'store'])->name('comments.store')->middleware(LoginMiddleware::class);
 
-Route::view('login', 'login.login');
-Route::view('register', 'login.register');
+Route::controller(LoginController::class)->name('login.')->group(function() {
+    Route::get('login', 'login')->name('login');
+    Route::get('register', 'register')->name('register');
+    Route::get('logout', 'logout')->name('logout');
+    Route::post('auth', 'auth')->name('auth');
+});
